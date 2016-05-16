@@ -17,14 +17,17 @@ RSpec.describe Checkout, "The checkout process" do
 
 	it 'should add up the total price' do
 		basket1.items.each { |item| co.scan(item) }
-		expect(co.total).to eq(74.2)
-		expect(Checkout.instance_methods).to eq('foo')
+		expect(co.total).to eq('£74.2')
+
+		co.clear
 
 		basket2.items.each { |item| co.scan(item) }
-		expect(co.total).to eq(38.45)
+		expect(co.total).to eq('£38.45')
+
+		co.clear
 
 		basket3.items.each { |item| co.scan(item) }
-		expect(co.total).to eq(83.45)
+		expect(co.total).to eq('£83.45')
 	end
 
 	describe 'apply a promotional discount' do
@@ -32,13 +35,17 @@ RSpec.describe Checkout, "The checkout process" do
 
 		it 'should deduct the discount from the total price' do
 			basket1.items.each { |item| co.scan(item) }
-			expect(co.total).to eq(66.78)
+			expect(co.total).to eq('£66.78')
+
+			co.clear
 
 			basket2.items.each { |item| co.scan(item) }
-			expect(co.total).to eq(36.95)
+			expect(co.total).to eq('£36.95')
+
+			co.clear
 
 			basket3.items.each { |item| co.scan(item) }
-			expect(co.total).to eq(73.76)
+			expect(co.total).to eq('£73.76')
 		end
 	end
 end
