@@ -15,37 +15,48 @@ RSpec.describe Checkout, "The checkout process" do
 		expect { basket1.items.each { |item| co.scan(item) }}.not_to raise_error
 	end
 
-	it 'should add up the total price' do
-		basket1.items.each { |item| co.scan(item) }
-		expect(co.total).to eq('£74.2')
+	describe 'without applying promotional rules' do
+		context 'on any basket' do
+			it 'should just add up the total price' do
+				basket1.items.each { |item| co.scan(item) }
+				expect(co.total).to eq('£74.2')
 
-		co.clear
+				co.clear
 
-		basket2.items.each { |item| co.scan(item) }
-		expect(co.total).to eq('£38.45')
+				basket2.items.each { |item| co.scan(item) }
+				expect(co.total).to eq('£38.45')
 
-		co.clear
+				co.clear
 
-		basket3.items.each { |item| co.scan(item) }
-		expect(co.total).to eq('£83.45')
+				basket3.items.each { |item| co.scan(item) }
+				expect(co.total).to eq('£83.45')
+			end
+		end
 	end
 
-	describe 'apply a promotional discount' do
-		let(:co) { Checkout.new('summer sale') }
 
-		it 'should deduct the discount from the total price' do
-			basket1.items.each { |item| co.scan(item) }
-			expect(co.total).to eq('£66.78')
+	describe 'applying promotional rules' do
+		let(:co) { Checkout.new('promotional_rules') }
 
-			co.clear
+		context 'on a basket worth over £60' do
+			it 'should deduct the discount from the total price' do
+				basket1.items.each { |item| co.scan(item) }
+				expect(co.total).to eq('£66.78')
+			end
+		end
 
-			basket2.items.each { |item| co.scan(item) }
-			expect(co.total).to eq('£36.95')
+		context 'on a basket worth below £60 containing at least two lavender hearts' do
+			it 'should deduct the discount from the total price' do
+				basket2.items.each { |item| co.scan(item) }
+				expect(co.total).to eq('£36.95')
+			end
+		end
 
-			co.clear
-
-			basket3.items.each { |item| co.scan(item) }
-			expect(co.total).to eq('£73.76')
+		context 'on a basket worth over £60 containing at least two lavender hearts' do
+			it 'should deduct the discount from the total price' do
+				basket3.items.each { |item| co.scan(item) }
+				expect(co.total).to eq('£73.76')
+			end
 		end
 	end
 end
